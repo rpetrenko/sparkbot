@@ -1,5 +1,6 @@
 import jenkins
 import os
+import re
 import datetime
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -15,6 +16,8 @@ class JenkinsProcessor(object):
         uri = os.environ.get("JENKINS_URL")
         username = os.environ.get("JENKINS_USER")
         password = os.environ.get("JENKINS_PASS")
+        # to trigger builds remotely
+        self.api_token = os.environ.get("JENKINS_API_TOKEN", None)
         if not uri or not username or not password:
             err_msg = "Set environment variabls JENKINS_URL, JENKINS_USER, JENKINS_PASS"
             raise JenkinsProcessorException(err_msg)
@@ -50,6 +53,30 @@ class JenkinsProcessor(object):
         supported = [
             'get job info'
         ]
+        if 'show last failure' in msg:
+            job_name = msg.split()[-1]
+            job_info = self.server.get_job_info(job_name)
+            bad = job_info['lastFailedBuild']['number']
+            output = self.server.get_build_console_output(job_name, bad)
+            m = re.search(r'Exception:(.*)', output)
+            if m:
+                output = m.groups(0)
+            return output
+
+        if 'trigger build' in msg:
+            job_name = msg.split()[-1]
+            if not self.api_token:
+                raise JenkinsProcessorException("Set JENKINS_API_TOKEN as environment variable")
+            job_info = self.server.get_job_info(job_name)
+            params = job_info['actions'][0]['parameterDefinitions']
+            pars = {}
+            for p in params:
+                name, value = p['name'], p['defaultParameterValue']
+                if value:
+                    pars[name] = value['value']
+            job_url = self.server.build_job(job_name, token=self.api_token, parameters=pars)
+            return "triggered"
+
         if 'get job info' in msg:
             builds = set()
             job_name = msg.split()[-1]

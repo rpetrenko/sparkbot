@@ -2,6 +2,7 @@
 Message processor from spark bot
 """
 import sys
+import re
 
 from gerrit_msg.gerrit_processor import GerritProcessor
 from jenkins_msg.jenkins_processor import JenkinsProcessor
@@ -14,10 +15,10 @@ class MessageProcessor(object):
 
     def process(self, msg):
         print("Processing [{}]".format(msg))
-        if 'jenkins' in msg:
+        if re.search(r'jenkins', msg, flags=re.I):
             resp = self.jenkins_api.process(msg)
             return resp
-        elif 'gerrit' in msg:
+        elif re.search(r'gerrit', msg, flags=re.I):
             self.gerrit_api.process(msg)
             return "using gerrit api"
         else:
