@@ -39,7 +39,7 @@ def sparkwebhook():
                     <strong>Your Flask web server is up and running!</strong>
                     </p>
                     <p>
-                    Here is a nice Cat Fact for you:
+                    Status:
                     </p>
                     <blockquote> {} </blockquote>
                     </body>
