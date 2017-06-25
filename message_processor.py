@@ -9,11 +9,12 @@ class MessageProcessor(object):
         gerrit_api = None
 
     def process(self, msg):
+        msg = msg.lower()
         print("Processing [{}]".format(msg))
         if 'jenkins' in msg:
-            print("using jenkins api")
+            return "using jenkins api"
         elif 'gerrit' in msg:
-            print("using gerrit api")
+            return "using gerrit api"
         else:
             return None
 

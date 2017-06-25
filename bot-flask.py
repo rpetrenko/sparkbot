@@ -10,9 +10,12 @@ from builtins import *
 # import requests
 from flask import Flask, request
 from ciscosparkapi import CiscoSparkAPI, Webhook
+from message_processor import MessageProcessor
+
 # Initialize the environment
 flask_app = Flask(__name__)
 spark_api = CiscoSparkAPI()
+message_processor = MessageProcessor()
 
 urls = ('/sparkwebhook', 'webhook')
 
@@ -76,6 +79,9 @@ def sparkwebhook():
             create_msg = "Got {}".format(message_text)
             print("SEND MESSAGE [{}]".format(create_msg))
             spark_api.messages.create(roomId=room_id, text=create_msg)
+            response = message_processor.process(message_text)
+            if response:
+                spark_api.messages.create(roomId=room_id, text=response)
             return 'OK'
 
 
