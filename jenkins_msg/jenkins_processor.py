@@ -51,6 +51,10 @@ class JenkinsProcessor(object):
 
     def process(self, msg):
         supported = [
+            'get job info',
+            'show last failure',
+            'show last lines',
+            'trigger build',
             'get job info'
         ]
         if 'show last failure' in msg:
@@ -63,6 +67,14 @@ class JenkinsProcessor(object):
                 output = m.groups(0)
             return output
 
+        if 'show last lines' in msg:
+            job_name = msg.split()[-1]
+            job_info = self.server.get_job_info(job_name)
+            last = job_info['lastBuild']['number']
+            output = self.server.get_build_console_output(job_name, last)
+            last_10 = output.split('\n')[-10:]
+            return "\n".join(last_10)
+
         if 'trigger build' in msg:
             job_name = msg.split()[-1]
             if not self.api_token:
@@ -74,7 +86,7 @@ class JenkinsProcessor(object):
                 name, value = p['name'], p['defaultParameterValue']
                 if value:
                     pars[name] = value['value']
-            job_url = self.server.build_job(job_name, token=self.api_token, parameters=pars)
+            self.server.build_job(job_name, token=self.api_token, parameters=pars)
             return "triggered"
 
         if 'get job info' in msg:
