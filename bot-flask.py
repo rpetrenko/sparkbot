@@ -6,9 +6,6 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
-import os
-# import json
-# import requests
 from flask import Flask, request
 from ciscosparkapi import CiscoSparkAPI, Webhook
 from message_processor import MessageProcessor
@@ -51,12 +48,7 @@ def sparkwebhook():
     elif request.method == 'POST':
         """Respond to inbound webhook JSON HTTP POST from Cisco Spark."""
 
-        json_data = request.json                                               # Get the POST data sent from Cisco Spark
-        # print("\n")
-        # print("WEBHOOK POST RECEIVED:")
-        # print(json_data)
-        # print("\n")
-
+        json_data = request.json
         webhook_obj = Webhook(json_data)
         room_id = webhook_obj.data.roomId
         room = spark_api.rooms.get(room_id)
