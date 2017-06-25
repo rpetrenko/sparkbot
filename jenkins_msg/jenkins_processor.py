@@ -20,12 +20,15 @@ class JenkinsProcessor(object):
         self.api_token = os.environ.get("JENKINS_API_TOKEN", None)
         if not uri or not username or not password:
             err_msg = "Set environment variabls JENKINS_URL, JENKINS_USER, JENKINS_PASS"
-            raise JenkinsProcessorException(err_msg)
-        self.server = jenkins.Jenkins(uri, username=username, password=password)
-        user = self.server.get_whoami()
-        print("Hello %s" % user['fullName'])
-        # version = self.server.get_version()
-        # print('Jenkins %s' % version)
+            print(err_msg)
+            print("WARNING: jenkins commands will be ignored")
+            self.server = None
+        else:
+            self.server = jenkins.Jenkins(uri, username=username, password=password)
+            user = self.server.get_whoami()
+            print("Hello %s" % user['fullName'])
+            # version = self.server.get_version()
+            # print('Jenkins %s' % version)
 
     def _convert_time_to_mins(self, t):
         # milli seconds to seconds
@@ -50,6 +53,8 @@ class JenkinsProcessor(object):
         )
 
     def process(self, msg):
+        if not self.server:
+            return "jenkins commands ignored"
         supported = [
             'get job info',
             'show last failure',

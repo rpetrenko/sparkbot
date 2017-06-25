@@ -18,9 +18,9 @@ class MessageProcessor(object):
         if re.search(r'jenkins', msg, flags=re.I):
             resp = self.jenkins_api.process(msg)
             return resp
-        elif re.search(r'gerrit', msg, flags=re.I):
-            self.gerrit_api.process(msg)
-            return "using gerrit api"
+        if re.search(r'gerrit', msg, flags=re.I):
+            resp = self.gerrit_api.process(msg)
+            return resp
         else:
             return None
 

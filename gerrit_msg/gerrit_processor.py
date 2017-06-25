@@ -15,12 +15,16 @@ class GerritProcessor(object):
         password = os.environ.get("GERRIT_PASS")
         if not uri or not username or not password:
             err_msg = "Set environment variables GERRIT_URL, GERRIT_USER, GERRIT_PASS"
-            raise GerritProcessorException(err_msg)
-
-        self.auth = HTTPDigestAuth(username, password)
-        self.rest = GerritRestAPI(url=uri, auth=self.auth)
+            print(err_msg)
+            print("WARNING: gerrit commands will be ignored")
+            self.rest = None
+        else:
+            self.auth = HTTPDigestAuth(username, password)
+            self.rest = GerritRestAPI(url=uri, auth=self.auth)
 
     def process(self, msg):
+        if not self.rest:
+            return "gerrit commands ignored"
         supported = [
             'status open'
         ]

@@ -6,6 +6,7 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
+import os
 # import json
 # import requests
 from flask import Flask, request
@@ -20,7 +21,11 @@ message_processor = MessageProcessor()
 urls = ('/sparkwebhook', 'webhook')
 
 
-# Core bot functionality
+def send_message(room_id, msg):
+    print("SEND MESSAGE [{}]".format(msg))
+    spark_api.messages.create(roomId=room_id, text=msg)
+
+
 @flask_app.route('/sparkwebhook', methods=['GET', 'POST'])
 # Your Spark webhook should point to http://<serverip>:5000/sparkwebhook
 def sparkwebhook():
@@ -77,11 +82,10 @@ def sparkwebhook():
             print("MESSAGE '{}'\n".format(message_text))
 
             create_msg = "Got {}".format(message_text)
-            print("SEND MESSAGE [{}]".format(create_msg))
-            spark_api.messages.create(roomId=room_id, text=create_msg)
+            send_message(room_id, create_msg)
             response = message_processor.process(message_text)
             if response:
-                spark_api.messages.create(roomId=room_id, text=response)
+                send_message(room_id, response)
             return 'OK'
 
 
