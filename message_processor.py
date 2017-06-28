@@ -14,7 +14,7 @@ class MessageProcessor(object):
         self.gerrit_api = GerritProcessor()
 
     def process(self, msg):
-        print("Processing [{}]".format(msg))
+        print("Processing [{}]".format(msg.encode('utf-8')))
         if re.search(r'jenkins', msg, flags=re.I):
             resp = self.jenkins_api.process(msg)
             return resp
