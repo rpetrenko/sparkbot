@@ -5,7 +5,7 @@
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
-from builtins import *
+# from builtins import *
 from flask import Flask, request
 from ciscosparkapi import CiscoSparkAPI, Webhook
 from message_processor import MessageProcessor
