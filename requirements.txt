@@ -1,2 +1,4 @@
 flask
 ciscosparkapi
+python-socketio
+eventlet
