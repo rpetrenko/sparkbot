@@ -14,7 +14,7 @@ def hello_world():
 @app.route('/mp', methods=['POST', "GET"])
 def mp():
     data = request.data
-    result = message_processor.process(data['msg'])
+    result = message_processor.process(data)
     return result
 
 

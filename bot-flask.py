@@ -85,6 +85,7 @@ def sparkwebhook():
             create_msg = "Processing {}".format(message_text)
             send_message(room_id, create_msg)
 
+            print("posting msg", message_text)
             result = requests.post('http://localhost:9001/mp', data=message_text)
             # message_processor.data = message_text
             # result = message_processor.process(message_text)
