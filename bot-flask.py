@@ -9,20 +9,10 @@ from __future__ import (absolute_import, division,
 from flask import Flask, request
 from ciscosparkapi import CiscoSparkAPI, Webhook
 import requests
-from message_processor import MessageProcessor
 
 # Initialize the environment
 flask_app = Flask(__name__)
 spark_api = CiscoSparkAPI()
-# start socket server
-# message_processor.start_server()
-
-
-client = SSHClient()
-client.load_system_host_keys()
-client.connect('http://localhost:9001/mp')
-stdin, stdout, stderr = client.exec_command('ls -l')
-
 
 urls = ('/sparkwebhook', 'webhook')
 
