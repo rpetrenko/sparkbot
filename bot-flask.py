@@ -8,14 +8,20 @@ from __future__ import (absolute_import, division,
 # from builtins import *
 from flask import Flask, request
 from ciscosparkapi import CiscoSparkAPI, Webhook
-# from message_processor import MessageProcessor
+import requests
+from message_processor import MessageProcessor
 
 # Initialize the environment
 flask_app = Flask(__name__)
 spark_api = CiscoSparkAPI()
-# message_processor = MessageProcessor("", 5559, use_ssl=True)
 # start socket server
 # message_processor.start_server()
+
+
+client = SSHClient()
+client.load_system_host_keys()
+client.connect('http://localhost:9001/mp')
+stdin, stdout, stderr = client.exec_command('ls -l')
 
 
 urls = ('/sparkwebhook', 'webhook')
@@ -79,10 +85,11 @@ def sparkwebhook():
             create_msg = "Processing {}".format(message_text)
             send_message(room_id, create_msg)
 
+            result = requests.post('http://localhost:9001/mp', data=message_text)
             # message_processor.data = message_text
             # result = message_processor.process(message_text)
-            # if result:
-            #     send_message(room_id, result)
+            if result:
+                send_message(room_id, result)
             return 'OK'
 
 

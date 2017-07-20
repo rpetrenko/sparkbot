@@ -11,7 +11,7 @@ import os.path
 
 
 class MessageProcessor(object):
-    def __init__(self, host, port, use_ssl=True):
+    def __init__(self, host, port, use_ssl=False):
         self.jenkins_processor = JenkinsProcessor()
         self.gerrit_processor = GerritProcessor()
         self.host = host
