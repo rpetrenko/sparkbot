@@ -80,7 +80,7 @@ def sparkwebhook():
             # message_processor.data = message_text
             # result = message_processor.process(message_text)
             if result:
-                send_message(room_id, result)
+                send_message(room_id, result.text)
             return 'OK'
 
 
