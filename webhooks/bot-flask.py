@@ -81,7 +81,8 @@ def sparkwebhook():
                 result = requests.post('http://localhost:9001/mp', data=message_text)
                 if result.ok:
                     result = result.text
-                    send_message(room_id, str(result))
+                    if result:
+                        send_message(room_id, str(result))
                     send_message(room_id, "Done")
             except ConnectionError as e:
                 send_message(room_id, str(e))
