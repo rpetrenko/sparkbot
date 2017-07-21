@@ -1,7 +1,6 @@
 """
 Message processor from spark bot
 """
-import os.path
 import re
 import sys
 
@@ -14,7 +13,7 @@ class MessageProcessor(object):
         self.jenkins_processor = JenkinsProcessor()
         self.gerrit_processor = GerritProcessor()
 
-    def process(self, msg):
+    def _process_by_subprocessor(self, msg):
         print("Processing [{}]".format(msg.encode('utf-8')))
         resp = ''
         if re.search(r'jenkins', msg, flags=re.I):
@@ -22,6 +21,15 @@ class MessageProcessor(object):
         elif re.search(r'gerrit', msg, flags=re.I):
             resp = self.gerrit_processor.process(msg)
         print("Response: {}".format(resp))
+        return resp
+
+    def _expand_keywords(self, msg):
+        print("Expanding keywords")
+        return msg
+
+    def process(self, msg):
+        msg = self._expand_keywords(msg)
+        resp = self._process_by_subprocessor(msg)
         return resp
 
 
