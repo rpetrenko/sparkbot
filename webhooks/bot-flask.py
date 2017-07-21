@@ -10,6 +10,8 @@ from ciscosparkapi import CiscoSparkAPI, Webhook
 import requests
 
 # Initialize the environment
+from requests import ConnectionError
+
 flask_app = Flask(__name__)
 spark_api = CiscoSparkAPI()
 
@@ -75,13 +77,14 @@ def sparkwebhook():
             send_message(room_id, create_msg)
 
             print("posting msg", message_text)
-            result = requests.post('http://localhost:9001/mp', data=message_text)
-            if result.ok:
-                result = result.text
-                send_message(room_id, str(result))
-                send_message(room_id, "Done")
-            else:
-                send_message(room_id, "No or invalid response from message server")
+            try:
+                result = requests.post('http://localhost:9001/mp', data=message_text)
+                if result.ok:
+                    result = result.text
+                    send_message(room_id, str(result))
+                    send_message(room_id, "Done")
+            except ConnectionError as e:
+                send_message(room_id, str(e))
             return 'OK'
 
 
