@@ -76,11 +76,12 @@ def sparkwebhook():
 
             print("posting msg", message_text)
             result = requests.post('http://localhost:9001/mp', data=message_text)
-            if result:
+            if result.ok:
+                result = result.text
                 send_message(room_id, str(result))
                 send_message(room_id, "Done")
             else:
-                send_message(room_id, "no or empty response from message server")
+                send_message(room_id, "No or invalid response from message server")
             return 'OK'
 
 
