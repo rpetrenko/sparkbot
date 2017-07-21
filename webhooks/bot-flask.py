@@ -5,7 +5,6 @@
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
-# from builtins import *
 from flask import Flask, request
 from ciscosparkapi import CiscoSparkAPI, Webhook
 import requests
@@ -77,10 +76,11 @@ def sparkwebhook():
 
             print("posting msg", message_text)
             result = requests.post('http://localhost:9001/mp', data=message_text)
-            # message_processor.data = message_text
-            # result = message_processor.process(message_text)
             if result:
-                send_message(room_id, result.text)
+                send_message(room_id, str(result))
+                send_message(room_id, "Done")
+            else:
+                send_message(room_id, "no or empty response from message server")
             return 'OK'
 
 

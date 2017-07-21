@@ -52,16 +52,30 @@ class JenkinsProcessor(object):
             ).strftime('%Y-%m-%d %H:%M:%S')
         )
 
+    def get_job_list_regex(self, pattern, folder_depth=4):
+        result = []
+        jobs = self.server.get_all_jobs(folder_depth)
+        for job in jobs:
+            if re.search(pattern, job['name']):
+                job_name = job['fullname']
+                result.append(job_name)
+        return result
+
     def process(self, msg):
         if not self.server:
             return "jenkins commands ignored"
         supported = [
-            'get job info',
+            'list jobs',
             'show last failure',
             'show last lines',
             'trigger build',
             'get job info'
         ]
+        if 'list jobs' in msg:
+            job_regex = msg.split()[-1]
+            job_info = self.get_job_list_regex(job_regex)
+            return job_info
+
         if 'show last failure' in msg:
             job_name = msg.split()[-1]
             job_info = self.server.get_job_info(job_name)

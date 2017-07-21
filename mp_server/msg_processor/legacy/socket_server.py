@@ -1,7 +1,6 @@
 import time
-import socket
-import ssl
-from common.common import TCPBase, test_host, create_socket, ssl_wrap
+
+from mp_server.msg_processor.common import TCPBase, test_host, create_socket, ssl_wrap
 
 
 class ServerThread(TCPBase):
@@ -48,7 +47,7 @@ class ServerThread(TCPBase):
                 client.close()
         self.s.close()
         print("exit server")
-            
+
 
 def main():
     host = ""
